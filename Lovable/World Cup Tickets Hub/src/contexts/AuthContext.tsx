@@ -31,8 +31,8 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<User | null>;
+  register: (name: string, email: string, password: string) => Promise<User | null>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<boolean>;
   orders: Order[];
@@ -118,25 +118,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
   }, [orders]);
 
-  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string): Promise<User | null> => {
     const result = await api.login(email, password);
     if (result.data?.user) {
       // Best effort to load full profile (created_at)
       const meRes = await api.getMe();
-      setUser(meRes.data?.user ? mapApiUser(meRes.data.user) : mapApiUser(result.data.user));
-      return true;
+      const mapped = meRes.data?.user ? mapApiUser(meRes.data.user) : mapApiUser(result.data.user);
+      setUser(mapped);
+      return mapped;
     }
-    return false;
+    return null;
   }, []);
 
-  const register = useCallback(async (name: string, email: string, password: string): Promise<boolean> => {
+  const register = useCallback(async (name: string, email: string, password: string): Promise<User | null> => {
     const result = await api.register(name, email, password);
     if (result.data?.user) {
       const meRes = await api.getMe();
-      setUser(meRes.data?.user ? mapApiUser(meRes.data.user) : mapApiUser(result.data.user));
-      return true;
+      const mapped = meRes.data?.user ? mapApiUser(meRes.data.user) : mapApiUser(result.data.user);
+      setUser(mapped);
+      return mapped;
     }
-    return false;
+    return null;
   }, []);
 
   const logout = useCallback(() => {

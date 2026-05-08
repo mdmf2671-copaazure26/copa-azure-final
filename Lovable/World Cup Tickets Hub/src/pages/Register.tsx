@@ -43,8 +43,8 @@ const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const success = await register(name, email, password);
-      if (success) {
+      const newUser = await register(name, email, password);
+      if (newUser) {
         toast({
           title: "Conta criada com sucesso!",
           description: "Bem-vindo ao FIFA 2026 Tickets.",

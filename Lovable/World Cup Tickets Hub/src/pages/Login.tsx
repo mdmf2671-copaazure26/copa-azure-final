@@ -17,20 +17,27 @@ const Login: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/';
+  // Redirect explícito da URL (?redirect=/algo) tem prioridade sobre o
+  // default por role. Útil quando o usuário é bounced de uma página
+  // protegida e queremos voltá-lo para lá após o login.
+  const explicitRedirect = searchParams.get('redirect');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const success = await login(email, password);
-      if (success) {
+      const loggedUser = await login(email, password);
+      if (loggedUser) {
+        const isAdmin = loggedUser.role === 'admin';
+        const target = explicitRedirect || (isAdmin ? '/admin' : '/');
         toast({
           title: "Login realizado com sucesso!",
-          description: "Bem-vindo de volta.",
+          description: isAdmin
+            ? "Bem-vindo ao painel administrativo."
+            : "Bem-vindo de volta.",
         });
-        navigate(redirect);
+        navigate(target);
       } else {
         toast({
           title: "Erro no login",

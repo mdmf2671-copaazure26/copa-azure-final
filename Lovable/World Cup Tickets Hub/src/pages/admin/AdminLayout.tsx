@@ -11,6 +11,7 @@ import {
   Trophy,
   ChevronLeft,
   Menu,
+  UserRound,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -99,13 +100,20 @@ const AdminLayout: React.FC = () => {
             </div>
           )}
           <div className="flex gap-2">
-            <Link to="/" className="flex-1">
+            <Link to="/" className="flex-1" title="Modo Usuário">
               <Button variant="outline" size="sm" className={cn("w-full", collapsed && "px-2")}>
-                {collapsed ? <Trophy className="w-4 h-4" /> : "Ver Site"}
+                {collapsed ? (
+                  <UserRound className="w-4 h-4" />
+                ) : (
+                  <>
+                    <UserRound className="w-4 h-4 mr-2" />
+                    Modo Usuário
+                  </>
+                )}
               </Button>
             </Link>
             {!collapsed && (
-              <Button variant="ghost" size="sm" onClick={logout}>
+              <Button variant="ghost" size="sm" onClick={logout} title="Sair">
                 <LogOut className="w-4 h-4" />
               </Button>
             )}
