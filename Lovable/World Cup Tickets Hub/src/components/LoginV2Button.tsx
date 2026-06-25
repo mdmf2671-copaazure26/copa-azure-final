@@ -18,14 +18,10 @@ export const LoginV2Button: React.FC = () => {
   const isV2Authenticated = useIsAuthenticated();
 
   if (!isEntraConfigured()) {
-    return (
-      <span
-        className="hidden lg:inline text-xs text-muted-foreground"
-        title="Configure VITE_ENTRA_CLIENT_ID e VITE_ENTRA_TENANT_ID para habilitar o login v2 (Entra)."
-      >
-        Login v2 (Entra) não configurado
-      </span>
-    );
+    // F1/Oitavas: sem App Registration (VITE_ENTRA_* ausentes), o login v2 fica
+    // OCULTO — só aparece quando F3 (Entra) estiver configurada. Antes renderizava
+    // um aviso "Login v2 (Entra) não configurado" que não deve aparecer nesta fase.
+    return null;
   }
 
   const handleLogin = async () => {
